@@ -1,12 +1,9 @@
-import Head from "next/head";
-import { useUser } from '@clerk/nextjs'
-import { SignInButton, SignOutButton } from "@clerk/nextjs";
-import { RouterOutputs, api } from "~/utils/api";
+import { SignInButton, useUser } from "@clerk/nextjs";
+import { api } from "~/utils/api";
 import Image from "next/image";
 import { LoadingPage, LoadingSpinner } from "~/components/loading";
 import { useState } from "react";
 import { toast } from "react-hot-toast"
-import Link from "next/link";
 import { PageLayout } from "~/components/mainContainer";
 import { PostView } from "~/components/postView";
 
@@ -73,7 +70,10 @@ const CreatePostWizard = () => {
 
 const Feed = () => {
   const { data, isLoading: postsLoading } = api.posts.getAll.useQuery()
-  if (postsLoading) return <LoadingPage />
+
+  if (postsLoading) return (<div className="flex grow">
+    <LoadingPage />
+  </div>)
 
   if (!data) return <div>Something went wrong</div>
 
@@ -93,23 +93,23 @@ export default function Home() {
   const { user, isLoaded: userLoaded, isSignedIn } = useUser()
   // Fetch posts asap
   console.log(user);
-  
+
   api.posts.getAll.useQuery()
   if (!userLoaded) return <div /> // return empty div if user isnt loaded
 
   return (
     <>
-    <PageLayout>
-          <div className="border-b border-slate-400 p-4">
+      <PageLayout>
+        <div className="border-b border-slate-400 p-4">
           {!isSignedIn && (
-          <div className="flex justify-center">
-            <SignInButton />
-          </div>
-        )}
-        {isSignedIn && <CreatePostWizard />}
-          </div>
-          <Feed />
-          </PageLayout>
+            <div className="flex justify-center">
+              <SignInButton />
+            </div>
+          )}
+          {isSignedIn && <CreatePostWizard />}
+        </div>
+        <Feed />
+      </PageLayout>
     </>
   )
 }
