@@ -1,25 +1,52 @@
 import Head from "next/head";
-import { useUser } from '@clerk/nextjs'
-import { SignInButton, SignOutButton } from "@clerk/nextjs";
-import { RouterOutputs, api } from "~/utils/api";
-import Image from "next/image";
-import dayjs from "dayjs"
-import relativeTime from "dayjs/plugin/relativeTime"
-import { LoadingPage, LoadingSpinner } from "~/components/loading";
-import { useState } from "react";
-import { toast } from "react-hot-toast"
+import { api } from "~/utils/api";
+import type { GetStaticProps, NextPage } from "next";
+import { createServerSideHelpers } from '@trpc/react-query/server';
+import { appRouter } from "~/server/api/root";
+import { prisma } from "~/server/db";
+import superjson from "superjson";
+import { PageLayout } from "~/components/mainContainer";
+import { PostView } from "~/components/postView";
 
-export default function SinglePostPage() {
+
+
+const SinglePostPage: NextPage<{ id: string }> = ({ id }) => {
+  const { data } = api.posts.getById.useQuery({ id })
+  if (!data) return <div>404</div>
 
   return (
     <>
       <Head>
-        <title>Post</title>
-        <meta name="description" content="🐥" />
+        <title>{`${data.post.content} - @${data.author.username}`}</title>
+        <meta name="description" content="🐧" />
       </Head>
-      <main className="h-screen flex justify-center">
-        <div>Post view</div>
-      </main>
+      <PageLayout>
+        <PostView {...data} />
+      </PageLayout>
     </>
   )
 }
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  const ssg = createServerSideHelpers({
+    router: appRouter,
+    ctx: { prisma, userId: null },
+    transformer: superjson, // optional - adds superjson serialization
+  });
+
+  const id = context.params?.id
+
+  if (typeof id !== "string") throw new Error("no id")
+await ssg.posts.getById.prefetch({id})
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+      id
+    }
+  }
+}
+
+export const getStaticPaths = () => {
+  return { paths: [], fallback: "blocking" }
+}
+export default SinglePostPage
