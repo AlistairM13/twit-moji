@@ -1,19 +1,3 @@
-# Create T3 App
+From the [tutorial](https://www.youtube.com/watch?v=YkOSUVzOAA4)
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
-
-Tutorial that i followed [youtube](https://www.youtube.com/watch?v=YkOSUVzOAA4)
-
-
-## Learn More
-
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
-
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
-
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
-
-## Deployment
-
-You can check out the `twit-moji` app on [vercel](https://twit-moji-mocha.vercel.app/)
+Deployed on [vercel](https://twit-moji-mocha.vercel.app/)
